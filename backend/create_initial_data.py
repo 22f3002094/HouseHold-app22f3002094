@@ -26,3 +26,7 @@ if db.session.query(ServiceProfessional).count()==0:
     P = ServiceProfessional(name="Prakash" , email = "Prakash@myapp.com" ,password="pass" , city = "Delhi" , phone="9999999999",cat_id=1 )
     db.session.add(P)
     db.session.commit()
+
+
+
+
