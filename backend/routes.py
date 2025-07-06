@@ -1,6 +1,7 @@
 from app import app
 from flask import render_template,request,redirect
 from .models import db, ServiceCategory,ServiceProfessional,User,Admin
+from flask_login import login_user , login_required , current_user
 
 @app.route("/")
 def index():
@@ -21,11 +22,14 @@ def login():
         if u :
             if u.password == password:
                 if isinstance(u , Admin):
-                    return redirect("/admin/dashboard")
+                    login_user(u)
+                    return redirect(f"/admin/dashboard")
                 elif isinstance(u , ServiceProfessional):
-                    return redirect("/professional/dashboard")
+                    login_user(u)
+                    return redirect(f"/professional/dashboard")
                 elif isinstance(u, User):
-                    return redirect("/customer/dashboard")
+                    login_user(u)
+                    return redirect(f"/customer/dashboard")
             
             else:
                 return "Incorrect Password"
@@ -85,6 +89,7 @@ def register():
             p_city = request.form.get("prof_city")
             p_phone = request.form.get("prof_phone")
             cat = request.form.get("prof_category")
+            
             prof = db.session.query(ServiceProfessional).filter_by(email=p_email).first()
             if not prof:
                 prof = ServiceProfessional(name=p_name,email=p_email, password=p_password,city=p_city,phone=p_phone,cat_id=cat)
@@ -114,15 +119,32 @@ def register():
 
 
 @app.route("/admin/dashboard" , methods=["GET" , "POST"])
+@login_required
 def admin_dashboard():
-    return "welcome to admin dashboard"    
+    
+    
+    return render_template("/admin/dashboard.html" , current_admin = current_user) 
+
 
 
 @app.route("/professional/dashboard" , methods=["GET" , "POST"])
+@login_required
 def prf_dashboard():
-    return "welcome to professional dashboard"      
+    
+    return render_template("/professional/dashboard.html" , current_professional = current_user) 
+    
 
 
 @app.route("/customer/dashboard" , methods=["GET" , "POST"])
+@login_required
 def cust_dashboard():
-    return "welcome to customer dashboard"
+
+    return render_template("/customer/dashboard.html" , current_cust = current_user) 
+
+
+
+@app.route("/professional/stats")
+def prof_stats():
+    if request.args.get("u_id"):
+        prof = db.session.query(ServiceProfessional).filter_by(id = request.args.get("u_id")).first()
+        return f"welcome to {prof.name} stats page"

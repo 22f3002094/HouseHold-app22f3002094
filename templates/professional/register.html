@@ -21,29 +21,29 @@
                
                     <form action="/register?u_type=professional" method="POST">
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="floatingInput" name ="prof_name" >
+                            <input type="text" class="form-control" id="floatingInput" name ="prof_name" required >
                             <label for="floatingInput">Name</label>
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="email" class="form-control" id="floatingInput" name="prof_email" >
+                            <input type="email" class="form-control" id="floatingInput" name="prof_email" required >
                             <label for="floatingInput">Email address</label>
                         </div>
                         
                         <div class="form-floating mb-3">
-                            <input type="password" class="form-control" id="floatingPassword" name="prof_password" >
+                            <input type="password" class="form-control" id="floatingPassword" name="prof_password"  required>
                             <label for="floatingPassword">Password</label>
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="floatingInput" name="prof_city" >
+                            <input type="text" class="form-control" id="floatingInput" name="prof_city" required >
                             <label for="floatingInput">City</label>
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="tel" class="form-control" id="floatingInput" name="prof_phone">
+                            <input type="tel" class="form-control" id="floatingInput" name="prof_phone" required>
                             <label for="floatingInput">phone</label>
                         </div>
                         <div class="form-floating mb-3">
                             
-                            <select id="floatingCat" class="form-control" name="prof_category">
+                            <select id="floatingCat" class="form-control" name="prof_category" required>
                                 <option>Select Category</option>
                                 {% for cat in categories%}
                                     <option value="{{cat.id}}">{{cat.name}}</option>
