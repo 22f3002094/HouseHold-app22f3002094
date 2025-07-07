@@ -17,13 +17,13 @@ if db.session.query(ServiceCategory).count()==0:
 
 if db.session.query(ServiceProfessional).count()==0:
     
-    R = ServiceProfessional(name="Ram" , email = "Ram@myapp.com" ,password="pass" , city = "Jaipur" , phone="9999999999",cat_id=2 )
+    R = ServiceProfessional(name="Ram" , email = "Ram@myapp.com" ,password="pass" ,status ="Requested" ,  city = "Jaipur" , phone="9999999999",cat_id=2 )
     db.session.add(R)
-    S = ServiceProfessional(name="Shyam" , email = "Shyam@myapp.com" ,password="pass" , city = "Delhi" , phone="9999999999",cat_id=2 )
+    S = ServiceProfessional(name="Shyam" , email = "Shyam@myapp.com" ,password="pass" , status ="Requested" ,  city = "Delhi" , phone="9999999999",cat_id=2 )
 
     db.session.add(S)
 
-    P = ServiceProfessional(name="Prakash" , email = "Prakash@myapp.com" ,password="pass" , city = "Delhi" , phone="9999999999",cat_id=1 )
+    P = ServiceProfessional(name="Prakash" , email = "Prakash@myapp.com" ,password="pass" ,status ="Requested" , city = "Delhi" , phone="9999999999",cat_id=1 )
     db.session.add(P)
     db.session.commit()
 
