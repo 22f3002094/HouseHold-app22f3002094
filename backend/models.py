@@ -64,6 +64,7 @@ class ServicePackage(db.Model):
     cat_id = db.Column(db.Integer, db.ForeignKey("category.id"), nullable = False)
     prof_id = db.Column(db.Integer, db.ForeignKey("professional.id"), nullable = False) 
     price = db.Column(db.Integer , nullable=False)
+    associate_bookings = db.relationship("Booking" , backref="package")
 
 
 class Booking(db.Model):
@@ -72,6 +73,8 @@ class Booking(db.Model):
     pack_id = db.Column(db.Integer, db.ForeignKey("package.id"), nullable = False)
     prof_id = db.Column(db.Integer, db.ForeignKey("professional.id"), nullable = False) 
     user_id =db.Column(db.Integer, db.ForeignKey("user.id"), nullable = False)  
+    date = db.Column(db.String , nullable=False)
+    time = db.Column(db.String , nullable=False)
     status=db.Column(db.String,nullable=False)
 
 

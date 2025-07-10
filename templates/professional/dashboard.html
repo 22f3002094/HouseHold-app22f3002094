@@ -150,6 +150,213 @@
             </div>
         </div>
     </div>
+    <div class="card mt-4 ms-5 me-5">
+        <div class="card-header">
+            <h5>Bookings</h5>
+        </div>
+        <div class="card-body">
+
+            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="active-booking-tab" data-bs-toggle="pill"
+                        data-bs-target="#active-booking" type="button" role="tab" aria-controls="active-booking"
+                        aria-selected="true">Active</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="requested-booking-tab" data-bs-toggle="pill"
+                        data-bs-target="#requested-booking" type="button" role="tab" aria-controls="requested-booking"
+                        aria-selected="false">Requested</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="otherbooking-tab" data-bs-toggle="pill" data-bs-target="#otherbooking"
+                        type="button" role="tab" aria-controls="otherbooking" aria-selected="false">Other</button>
+                </li>
+
+            </ul>
+            <div class="tab-content" id="pills-tabContent">
+                <div class="tab-pane fade show active" id="active-booking" role="tabpanel"
+                    aria-labelledby="active-booking-tab" tabindex="0">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Customer Name</th>
+                                <th scope="col">Package Name</th>
+                                <th scope="col">Customer Address</th>
+                                <th scope="col">Customer Email</th>
+                                <th scope="col">Customer Phone</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Time</th>
+                                <th scope="col">Price</th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ab in active_bookings %}
+                            <tr>
+
+                                <td>{{ab.user.name}}</td>
+                                <td>{{ab.package.name}}</td>
+                                <td>{{ab.user.address}}r</td>
+                                <td>{{ab.user.email}}</td>
+                                <td>{{ab.user.phone}}</td>
+                                <td>{{ab.date}}</td>
+                                <td>{{ab.time}}</td>
+                                <td>{{ab.package.price}}</td>
+
+                                
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+
+
+                </div>
+                <div class="tab-pane fade" id="requested-booking" role="tabpanel" aria-labelledby="requested-booking-tab"
+                    tabindex="0">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Customer Name</th>
+                                <th scope="col">Package Name</th>
+                                <th scope="col">Customer Address</th>
+                                <th scope="col">Customer Email</th>
+                                <th scope="col">Customer Phone</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Time</th>
+                                <th scope="col">Price</th>
+
+
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for rb in requested_bookings %}
+                            <tr>
+
+                                <td>{{rb.user.name}}</td>
+                                <td>{{rb.package.name}}</td>
+                                <td>{{rb.user.address}}r</td>
+                                <td>{{rb.user.email}}</td>
+                                <td>{{rb.user.phone}}</td>
+                                <td>{{rb.date}}</td>
+                                <td>{{rb.time}}</td>
+                                <td>{{rb.package.price}}</td>
+                                <td>
+
+                                    <button class="btn btn-success" data-bs-toggle="modal"
+                                        data-bs-target="#accept-booking-{{rb.id}}">
+                                        Accept
+                                    </button>
+
+                                    <!-- accept modal-->
+                                    <div class="modal fade" id="accept-booking-{{rb.id}}" tabindex="-1"
+                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Accept
+                                                        Booking</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are you sure you want to Accept the booking?
+                                                </div>
+                                                <div class="modal-footer">
+
+                                                    <form action="/booking?task=accept&book_id={{rb.id}}"
+                                                        method="POST">
+                                                        <button type="submit" class="btn btn-primary">Yes</button>
+                                                    </form>
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">No</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button class="btn btn-danger" data-bs-toggle="modal"
+                                        data-bs-target="#reject-booking-{{rb.id}}">
+                                        Reject
+                                    </button>
+                                    <!-- reject modal -->
+                                    <div class="modal fade" id="reject-booking-{{rb.id}}" tabindex="-1"
+                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Reject
+                                                        Booking</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are you sure you want to Reject the booking?
+                                                </div>
+                                                <div class="modal-footer">
+
+                                                    <form action="/booking?task=reject&book_id={{rb.id}}"
+                                                        method="POST">
+                                                        <button type="submit" class="btn btn-primary">Yes</button>
+                                                    </form>
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">No</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="tab-pane fade" id="otherbooking" role="tabpanel" aria-labelledby="otherbooking-tab"
+                    tabindex="0">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Customer Name</th>
+                                <th scope="col">Package Name</th>
+                                <th scope="col">Customer Address</th>
+                                <th scope="col">Customer Email</th>
+                                <th scope="col">Customer Phone</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Time</th>
+                                <th scope="col">Price</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ob in other_bookings %}
+                            <tr>
+
+                                 <td>{{ob.user.name}}</td>
+                                <td>{{ob.package.name}}</td>
+                                <td>{{ob.user.address}}r</td>
+                                <td>{{ob.user.email}}</td>
+                                <td>{{ob.user.phone}}</td>
+                                <td>{{ob.date}}</td>
+                                <td>{{ob.time}}</td>
+                                <td>{{ob.package.price}}</td>
+                                
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
     {% elif current_professional.status=="Requested" %}
     <div class="card ms-auto me-auto p-4 " style="width: 30%;">
         You request is pending for admin's approval
