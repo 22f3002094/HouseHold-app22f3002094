@@ -2,6 +2,7 @@ from app import app
 from flask import render_template,request,redirect, flash
 from .models import db, ServiceCategory,ServiceProfessional,User,Admin,ServicePackage , Booking
 from flask_login import login_user , login_required , current_user
+from datetime import datetime
 
 @app.route("/")
 def index():
@@ -137,6 +138,29 @@ def admin_dashboard():
                            active_prof = active_prof, requested_prof=requested_prof, flagged_prof=flagged_prof,
                             active_cust=active_cust, flagged_cust=flagged_cust ) 
 
+@app.route("/admin/search" , methods=["GET","POST"])
+def admin_search():
+    if request.method=="GET":
+        return render_template("/admin/search.html" , current_admin = current_user)
+    if request.method=="POST":
+        type = request.form.get("type")
+        query = request.form.get("search_query")
+        print(type)
+        if type =="category":
+            results = db.session.query(ServiceCategory).filter(ServiceCategory.name.ilike(f"%{query}%")).all()
+            return render_template("/admin/search.html" ,current_admin = current_user , results= results , type=type)
+
+        elif type == "professional":
+            results = db.session.query(ServiceProfessional).filter(ServiceProfessional.name.ilike(f"%{query}%")).all()
+            return render_template("/admin/search.html" ,current_admin = current_user , results= results , type=type)
+
+
+        elif type =="customer":
+            results = db.session.query(User).filter(User.name.ilike(f"%{query}%")).all()
+            return render_template("/admin/search.html" ,current_admin = current_user , results= results ,type=type)
+        else :
+            return "Not working"
+
 
 
 @app.route("/professional/dashboard" , methods=["GET" , "POST"])
@@ -145,8 +169,12 @@ def prf_dashboard():
     active_bookings = []
     requested_bookings = []
     other_bookings = []
+    current_date = datetime.now().strftime("%Y-%m-%d")
+    todays_bookings = []
     for booking in current_user.recieved_bookings:
-        if booking.status =="Active":
+        if (booking.status =="Active" or booking.status=="Started" or booking.status=="Finished" ) and booking.date == current_date :
+            todays_bookings.append(booking)
+        elif booking.status=="Active":
             active_bookings.append(booking)
         elif booking.status=="Requested":
             requested_bookings.append(booking)
@@ -154,8 +182,9 @@ def prf_dashboard():
             other_bookings.append(booking)
 
     return render_template("/professional/dashboard.html" , current_professional = current_user , active_bookings= active_bookings , requested_bookings = requested_bookings,
-                           other_bookings=other_bookings) 
+                           other_bookings=other_bookings , todays_bookings=todays_bookings) 
     
+
 
 
 @app.route("/customer/dashboard" , methods=["GET" , "POST"])
@@ -165,8 +194,9 @@ def cust_dashboard():
     active_bookings = []
     requested_bookings= []
     other_bookings = []
+
     for book in current_user.created_bookings:
-        if book.status =="Acive":
+        if book.status =="Active"  or book.status=="Started" or book.status=="Finished":
 
             active_bookings.append(book)
         elif book.status=="Requested":
@@ -353,3 +383,28 @@ def booking():
         db.session.commit()
         flash("booking is created")
         return redirect("/customer/dashboard")
+    elif request.args.get("task") =="start":
+        book_id = request.args.get("book_id")
+        book = db.session.query(Booking).filter_by(id=book_id).first()
+        if book:
+            book.status = "Started"
+            db.session.commit()
+            flash("Booking is started")
+            return redirect("/professional/dashboard")
+    elif request.args.get("task") =="finish":
+        book_id = request.args.get("book_id")
+        book = db.session.query(Booking).filter_by(id=book_id).first()
+        if book:
+            book.status = "Finished"
+            db.session.commit()
+            flash("Booking is Finished")
+            return redirect("/professional/dashboard")
+    elif request.args.get("task") =="close":
+        book_id = request.args.get("book_id")
+        book = db.session.query(Booking).filter_by(id=book_id).first()
+        if book:
+            book.status = "Closed"
+            db.session.commit()
+            flash("Booking is Closed")
+            return redirect("/customer/dashboard")
+        

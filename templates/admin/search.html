@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Document</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand fs-5" href="#">Helpify</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto fs-5">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Search</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Stats</a>
+                    </li>
+
+                </ul>
+
+                <div class="dropdown me-3 ms-2">
+                    <button class="btn btn- dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <i class="bi bi-person fs-5 "></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#">LogOut</a></li>
+
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </nav>
+    {% set messages = get_flashed_messages() %}
+    {% for msg in messages %}
+    <div class="alert alert-warning alert-dismissible ms-5 me-5 mt-2 fade show" role="alert">
+        {{msg}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+
+    <div class="card mt-5 ms-auto me-auto p-3" style="width: 40%;">
+        <form action="/admin/search" method="post">
+            <div class="d-flex d-inline">
+                <div class="form-check me-3 ">
+                    <input class="form-check-input" type="radio" name="type" value="category" id="cat" checked>
+                    <label class="form-check-label" for="cat">
+                        Service Category
+                    </label>
+                </div>
+                <div class="form-check me-3">
+                    <input class="form-check-input" type="radio" name="type" value="professional" id="prof">
+                    <label class="form-check-label" for="prof">
+                        Professional
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="type" value="customer" id="cust">
+                    <label class="form-check-label" for="cust">
+                        Customer
+                    </label>
+                </div>
+            </div>
+            <div class="form-floating mt-3 mb-3">
+                <input type="text" class="form-control" id="floatingInput" name="search_query">
+                <label for="floatingInput">Search</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+
+        </form>
+
+    </div>
+
+    <div class="card mt-3">
+        <div class="card-header">Search Results</div>
+        <div class="card-body">
+            {% if type=="category" %}
+            <div class="row">
+                {% for cat in results %}
+                <div class="col-3 mb-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <p>{{cat.name}}</p>
+                            <p>Professional count : {{cat.professionals | length }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% elif type =="professional" %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Category Name</th>
+                        <th scope="col">City</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Status</th>
+
+
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for prof in results %}
+                    <tr>
+
+                        <td>{{prof.name}}</td>
+                        <td>{{prof.category.name}}</td>
+                        <td>{{prof.city}}r</td>
+                        <td>{{prof.email}}</td>
+                        <td>{{prof.status}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+
+            {% elif type=="customer" %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Address</th>
+                        <th scope="col">City</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Status</th>
+
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cust in results %}
+                    <tr>
+
+                        <td>{{cust.name}}</td>
+                        <td>{{cust.address}}</td>
+                        <td>{{cust.city}}r</td>
+                        <td>{{cust.email}}</td>
+                        <td>{{cust.status}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+
+
+        </div>
+
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
