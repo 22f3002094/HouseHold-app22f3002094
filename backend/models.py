@@ -21,6 +21,7 @@ class ServiceCategory(db.Model):
     id  = db.Column(db.Integer , primary_key=True , autoincrement=True)
     name = db.Column(db.String , nullable=False,unique=True)
     professionals = db.relationship("ServiceProfessional" ,  backref="category")
+    bookings = db.relationship("Booking" ,  backref="category")
     
     
 
@@ -72,7 +73,8 @@ class Booking(db.Model):
     id  = db.Column(db.Integer , primary_key=True , autoincrement=True)
     pack_id = db.Column(db.Integer, db.ForeignKey("package.id"), nullable = False)
     prof_id = db.Column(db.Integer, db.ForeignKey("professional.id"), nullable = False) 
-    user_id =db.Column(db.Integer, db.ForeignKey("user.id"), nullable = False)  
+    user_id =db.Column(db.Integer, db.ForeignKey("user.id"), nullable = False) 
+    cat_id =  db.Column(db.Integer, db.ForeignKey("category.id")) 
     date = db.Column(db.String , nullable=False)
     time = db.Column(db.String , nullable=False)
     status=db.Column(db.String,nullable=False)

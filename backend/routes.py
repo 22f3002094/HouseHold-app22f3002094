@@ -3,6 +3,9 @@ from flask import render_template,request,redirect, flash
 from .models import db, ServiceCategory,ServiceProfessional,User,Admin,ServicePackage , Booking
 from flask_login import login_user , login_required , current_user
 from datetime import datetime
+import matplotlib.pyplot as plt
+import matplotlib 
+matplotlib.use("agg")
 
 @app.route("/")
 def index():
@@ -162,6 +165,29 @@ def admin_search():
             return "Not working"
 
 
+@app.route("/admin/stats" ,methods=["GET" , "POST"])
+def admin_stats():
+    if request.method=="GET":
+
+        cat_names = []
+        book_count = []
+        cats = db.session.query(ServiceCategory).all()
+        for cat in cats:
+            cat_names.append(cat.name)
+            book_count.append(len(cat.bookings))
+
+
+
+        plt.bar(cat_names , book_count, color=["green" , "red" , "yellow" , "black"] )
+        plt.xlabel("Categories")
+        plt.ylabel("Booking Count")
+        plt.savefig("./static/admin/fruits-count.png")
+
+
+
+
+        return render_template('/admin/stats.html')
+
 
 @app.route("/professional/dashboard" , methods=["GET" , "POST"])
 @login_required
@@ -209,14 +235,22 @@ def cust_dashboard():
 
 @app.route("/customer/search" , methods=["GET", "POST"])
 def cust_search():
-    if request.args.get("cat_id"):
+    if request.method=="GET" and request.args.get("cat_id"):
         packs = db.session.query(ServicePackage).filter_by(cat_id = request.args.get("cat_id")).all()
         reslut = []
         for pack in packs:
             if pack.professional.city == current_user.city:
                 reslut.append(pack)
 
-    return render_template("/customer/search.html" , result_packs=reslut) 
+        return render_template("/customer/search.html" , result_packs=reslut) 
+    elif request.method=="GET":
+        return render_template("/customer/search.html")
+    elif request.method=="POST":
+        query = request.form.get("search_query")
+        packs = db.session.query(ServicePackage).filter(ServicePackage.name.ilike(f"%{query}%")).all()
+        return render_template("/customer/search.html" , result_packs=packs) 
+        
+
 
 
 
